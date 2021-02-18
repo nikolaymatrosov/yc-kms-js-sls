@@ -1,0 +1,36 @@
+service: kms-demo
+frameworkVersion: ">=1.1.0"
+configValidationMode: off
+useDotenv: true
+
+provider:
+  name: yandex-cloud
+  runtime: nodejs14
+
+plugins:
+  - serverless-yandex-cloud
+
+package:
+  exclude:
+    - ./**
+  include:
+    - main.js
+
+functions:
+  env-demo:
+    # this is formatted as <FILENAME>.<HANDLER>
+    handler: main.handler
+    memory: 128
+    timeout: 10
+    account: kms-demo-sa
+    # Serverless framework support referencing variable from variety of different sources
+    # For more info see: https://www.serverless.com/framework/docs/providers/aws/guide/variables/
+    environment:
+      CIPHERTEXT: ${env:CIPHERTEXT}
+      KEY_ID: ${env:KEY_ID}
+
+resources:
+  kms-demo-sa:
+    type: yc::ServiceAccount
+    roles:
+      - kms.keys.encrypterDecrypter
