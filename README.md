@@ -1,4 +1,4 @@
-###Установим зависимости
+### Установим зависимости
 
 ```shell
 npm i -g serverless
@@ -6,7 +6,7 @@ npm i
 ```
 Еще нам понадобится `yc` CLI. Инструкция по установке и настройке [тут](https://cloud.yandex.ru/docs/cli/quickstart).
 
-###Подготовим секрет.
+### Подготовим секрет.
 
 Для наглядности в качестве секрета и для простоты валидации возьмем обычную фразу и запишем ее в файл `plaintext.txt`.
 ```shell
@@ -39,13 +39,13 @@ yc kms symmetric-key get --name=kms-demo --format=json | jq -r '"KEY_ID=\(.id)"'
 echo "CIPHERTEXT=$(base64 -i ciphertext.txt)" >> .env
 ```
 
-###Раздеплоим функцию.
+### Раздеплоим функцию.
 
 ```shell
 sls deploy
 ```
 
-###Теперь можно проверить
+### Теперь можно проверить
 ```shell
 sls invoke -f env-demo
 ```
