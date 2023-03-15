@@ -5,7 +5,7 @@ useDotenv: true
 
 provider:
   name: yandex-cloud
-  runtime: nodejs14
+  runtime: nodejs16
 
 plugins:
   - serverless-yandex-cloud

@@ -1,21 +1,20 @@
-const kms = require("yandex-cloud/api/kms/v1");
+import {cloudApi, serviceClients, Session} from '@yandex-cloud/nodejs-sdk';
+
+const {kms: {symmetric_crypto_service: {SymmetricDecryptRequest}}} = cloudApi;
 
 const {CIPHERTEXT, KEY_ID} = process.env;
+const session = new Session();
+const client = session.client(serviceClients.SymmetricCryptoServiceClient);
 
-const cryptoService = new kms.SymmetricCryptoService();
+const result = client.decrypt(
+    SymmetricDecryptRequest.fromPartial({
+        keyId: KEY_ID,
+        ciphertext: Buffer.from(CIPHERTEXT, 'base64'),
+    })
+);
 
-// Если быстро запустить функцию в логах можно будет увидеть, что секрет
-// запрашивался не на каждый вызов. Тем самым вынеся расшифровку секрета из тела
-// функции обработчика мы можем сэкономить запросы к KMS.
-console.log("before decrypt");
-const response = cryptoService.decrypt({
-    ciphertext: Buffer.from(CIPHERTEXT, 'base64'), keyId: KEY_ID
-});
-console.log("after decrypt");
-
-
-module.exports.handler = async function () {
-    const secret = await response;
+export const handler = async function () {
+    const secret = await result;
     return {
         statusCode: 200,
         body: Buffer.from(secret.plaintext).toString(),
